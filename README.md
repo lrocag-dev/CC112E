@@ -5,5 +5,5 @@ Colección de problemas en C++20.
 ## Índice
 
 ### Problemas
-- [Estructuras](estructuras.md)
+- [Estructuras](estructuras/problemas.md)
 
