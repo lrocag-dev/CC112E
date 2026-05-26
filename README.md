@@ -4,6 +4,8 @@ Colección de problemas en C++20.
 
 ## Índice
 
-### Problemas
-- [Estructuras](estructuras/problemas.md)
+### Estructuras
+- [Problemas](estructuras/problemas.md)
+- [Soluciones](estructuras/soluciones.md)
+- [Código](estructuras/codigo.md)
 
