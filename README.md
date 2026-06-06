@@ -9,3 +9,7 @@ Colección de problemas en C++20.
 - [Soluciones](estructuras/soluciones.md)
 - [Código](estructuras/codigo.md)
 
+### Gestión Dinámica, Estructuras y Archivos
+- [Problemas](archivos/problemas.md)
+- [Soluciones](archivos/soluciones.md)
+- [Código](archivo/codigo_ejemplo.md)
