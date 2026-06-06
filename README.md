@@ -12,4 +12,4 @@ Colección de problemas en C++20.
 ### Gestión Dinámica, Estructuras y Archivos
 - [Problemas](archivos/problemas.md)
 - [Soluciones](archivos/soluciones.md)
-- [Código](archivo/codigo_ejemplo.md)
+- [Código](archivos/codigo_ejemplo.md)
