@@ -466,3 +466,46 @@ do {
 10. Validar apertura de archivos.
 
 Este framework cubre aproximadamente el 90% de los ejercicios universitarios sobre estructuras, archivos de texto, archivos binarios y acceso aleatorio en C++20.
+
+# Código del problema 1
+
+## Compilación
+
+```bash
+g++ -std=c++20 -Wall -Wextra -pedantic solucion01.cpp -o solucion01
+```
+
+## Ejemplo de ejecución
+
+```text
+Ingrese cantidad de estudiantes: 3
+
+Estudiante #1
+Codigo   : 1001
+Nombre   : Ana Torres
+Promedio : 16.8
+
+Estudiante #2
+Codigo   : 1002
+Nombre   : Luis Rojas
+Promedio : 18.4
+
+Estudiante #3
+Codigo   : 1003
+Nombre   : Carla Perez
+Promedio : 15.7
+```
+
+Salida:
+
+```text
+Codigo    Nombre                        Promedio
+--------------------------------------------------
+1001      Ana Torres                    16.80
+1002      Luis Rojas                    18.40
+1003      Carla Perez                   15.70
+
+ESTUDIANTE CON MAYOR PROMEDIO
+
+1002      Luis Rojas                    18.40
+```
