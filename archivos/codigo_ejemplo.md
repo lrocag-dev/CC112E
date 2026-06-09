@@ -467,7 +467,7 @@ do {
 
 Este framework cubre aproximadamente el 90% de los ejercicios universitarios sobre estructuras, archivos de texto, archivos binarios y acceso aleatorio en C++20.
 
-# Código del problema 1
+# [Código del problema 1](codigo/solucion01.cpp)
 
 ## Compilación
 
