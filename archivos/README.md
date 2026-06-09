@@ -5,6 +5,6 @@ Colección de problemas en C++20.
 ## Índice
 
 ### Gestión Dinámica, Estructuras y Archivos
-- [Problemas](archivos/problemas.md)
-- [Soluciones](archivos/soluciones.md)
-- [Código](archivos/codigo_ejemplo.md)
+- [Problemas](problemas.md)
+- [Soluciones](oluciones.md)
+- [Código](codigo_ejemplo.md)
