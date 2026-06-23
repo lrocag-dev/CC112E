@@ -8,3 +8,4 @@ Colección de problemas en C++20.
 - [Problemas](problemas.md)
 - [Soluciones](soluciones.md)
 - [Código](codigo_ejemplo.md)
+- [Clases en múltiples archivos](clases_en_multiples_archivos.md)
