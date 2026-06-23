@@ -18,3 +18,4 @@ Colección de problemas en C++20.
 - [Problemas](clases/problemas.md)
 - [Soluciones](clases/soluciones.md)
 - [Código](clases/codigo_ejemplo.md)
+- [Clases en múltiples archivos](clases/clases_en_multiples_archivos.md)
