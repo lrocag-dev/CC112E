@@ -13,3 +13,8 @@ Colección de problemas en C++20.
 - [Problemas](archivos/problemas.md)
 - [Soluciones](archivos/soluciones.md)
 - [Código](archivos/codigo_ejemplo.md)
+
+### Introducción a la programación orientada a objetos
+- [Problemas](clases/problemas.md)
+- [Soluciones](clases/soluciones.md)
+- [Código](clases/codigo_ejemplo.md)
