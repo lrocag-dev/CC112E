@@ -46,6 +46,7 @@ Diseñe un sistema para gestionar empleados de una empresa.
 
 ```cpp
 p.setNombre("X").setPrecio(10);
+```
 
 ---
 
