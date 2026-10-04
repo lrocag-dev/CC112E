@@ -1,6 +1,8 @@
 # Laboratorio del curso Fundamentos de Programación - CC112E
 
-Colección de problemas en C++20, ordenada por semana del sílabo (ciclo 2026-2).
+Colección de problemas en C++, ordenada por semana del sílabo (ciclo 2026-2).
+
+Cada sesión tiene 20 problemas: del 1 al 15 se resuelven con C++11 (nivel básico/intermedio y avanzado) y del 16 al 20 usan características modernas de C++20. Compilar con `g++ -std=c++20 -Wall -Wextra` (GCC 13 o superior).
 
 ## Índice
 

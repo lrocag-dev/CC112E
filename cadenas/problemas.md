@@ -205,3 +205,79 @@ Cada línea tiene el formato `nombre,edad,nota`.
 2 + 3 * 4 - 10 / 4  ->  11.5
 5/0                 ->  Error: division por cero
 ```
+
+---
+
+# Nivel C++20 — Programación moderna
+
+Los problemas 1 al 15 se resuelven con C++11 o anterior. Los problemas 16 al 20 usan características de C++20 (y de C++14/17 que se consolidan en él). Compile con:
+
+```bash
+g++ -std=c++20 -Wall -Wextra solucionNN.cpp -o solucionNN
+```
+
+> `<format>` requiere GCC 13 o superior (o MSVC 19.29+). Verifique su compilador con `g++ --version`.
+
+---
+
+# Problema 16 — `string_view`: ver cadenas sin copiarlas (C++17/20)
+
+## Requerimientos
+
+- Implementar `vector<string_view> dividir(string_view s, char sep)` sin copiar ninguna subcadena.
+- Implementar `string_view recortar(string_view s)` que quite espacios al inicio y al final usando `remove_prefix` y `remove_suffix`.
+- Probar con `"  Ana ; Luis;Rosa  ;  Pedro "`.
+- Con una URL, extraer el protocolo y usar `starts_with` y `ends_with` (C++20).
+- Explicar por qué un `string_view` no debe sobrevivir a la cadena que observa.
+
+---
+
+# Problema 17 — `std::format` y `from_chars` (C++20)
+
+## Requerimientos
+
+- Mostrar una tabla de productos con columnas alineadas (`{:<12}`, `{:>8}`, `{:>10.2f}`), una línea de separación y el total.
+- Mostrar un número en hexadecimal, en binario, con ceros a la izquierda y un texto centrado y con relleno.
+- Implementar `optional<double> aReal(string_view s)` con `from_chars`, que rechace entradas como `"7x"` o `""`.
+- Convertir un entero a texto con `to_chars` sobre un `char[]`.
+
+## Ejemplo
+
+```
+Producto    |   Unid.|    Precio|  Subtotal
+Lapiz       |      12|      1.50|     18.00
+```
+
+---
+
+# Problema 18 — Vistas de rangos sobre texto (C++20)
+
+## Requerimientos
+
+- Implementar `normalizar(string_view)` como una cadena de vistas: `views::filter` (solo letras) y `views::transform` (a minúscula).
+- Reescribir `esPalindromo` con `ranges::equal(n, n | views::reverse)`.
+- Dividir una frase con `views::split(' ')`, mostrando cada palabra y su longitud.
+- Usar `views::take` para mostrar los primeros caracteres.
+- Explicar qué significa que una vista sea *perezosa*.
+
+---
+
+# Problema 19 — `concepts` para cadenas (C++20)
+
+## Requerimientos
+
+- Definir `concept TextoLike = convertible_to<T, string_view>`.
+- Implementar `contarVocales` y `mayusculas` como plantillas restringidas por ese concepto que funcionen con `char[]`, `const char *`, `string` y `string_view`.
+- Definir `concept Contenedor` con una expresión `requires` (que tenga `size()`, `begin()` y `end()`) y una función `longitud`.
+- Dejar comentadas las llamadas inválidas (`contarVocales(42)`, `longitud` sobre un `char[]`) y explicar por qué fallan.
+
+---
+
+# Problema 20 — Operador `<=>` y ordenamiento con proyecciones (C++20)
+
+## Requerimientos
+
+- Definir `struct Persona { string apellido, nombre; int edad; }` con `auto operator<=>(const Persona &) const = default`.
+- Ordenar un `vector<Persona>` con `ranges::sort` (orden natural), luego por apellido **sin distinguir mayúsculas** (proyección con lambda) y por edad descendente (`&Persona::edad` con `ranges::greater{}`).
+- Implementar `strong_ordering compararSinCaso(const string &, const string &)` usando `<=>`.
+- Mostrar que `"Ana" < "ana"` es verdadero en ASCII y que `compararSinCaso("Ana", "ana")` las considera iguales.

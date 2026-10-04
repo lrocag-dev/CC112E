@@ -140,6 +140,76 @@ Prefiera estos tipos a `new`/`delete` manuales.
 
 ---
 
+# Plantillas C++20
+
+## Plantilla C1 — `span`
+
+```cpp
+#include <span>
+
+int suma(span<const int> v)
+{
+    int s = 0;
+    for (int x : v) s += x;
+    return s;
+}
+
+int a[] = {1, 2, 3, 4, 5};
+suma(a);                       // todo el arreglo
+suma(span(a).subspan(1, 3));   // a[1..3]
+```
+
+## Plantilla C2 — Rangos y proyecciones
+
+```cpp
+#include <algorithm>
+#include <ranges>
+
+ranges::sort(v);
+ranges::sort(v, ranges::greater{});
+ranges::sort(items, {}, &Item::campo);
+auto it = ranges::find(v, valor);
+auto pares = v | views::filter([](int x){ return x % 2 == 0; });
+```
+
+## Plantilla C3 — Concepts
+
+```cpp
+#include <concepts>
+
+template <typename T>
+concept Numerico = integral<T> || floating_point<T>;
+
+template <Numerico T>
+T doble(T x) { return x * 2; }
+
+template <typename T>
+requires totally_ordered<T>
+const T *mayor(span<const T> v);
+```
+
+## Plantilla C4 — `unique_ptr` con eliminador
+
+```cpp
+auto cerrar = [](FILE *f){ if (f) fclose(f); };
+unique_ptr<FILE, decltype(cerrar)> f(fopen("a.txt", "r"), cerrar);
+
+auto buf = make_unique_for_overwrite<int[]>(n);   // sin inicializar
+```
+
+## Plantilla C5 — `constexpr` / `consteval`
+
+```cpp
+constexpr int sumaPtr(const int *ini, const int *fin) { /* ... */ }
+constexpr array<int, 5> datos = {1, 2, 3, 4, 5};
+static_assert(sumaPtr(datos.data(), datos.data() + 5) == 15);
+
+consteval int cuadrado(int x) { return x * x; }
+constexpr int c = cuadrado(12);
+```
+
+---
+
 # Errores frecuentes
 
 | Error | Consecuencia |

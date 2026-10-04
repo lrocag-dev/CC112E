@@ -540,3 +540,55 @@ int main() {
 }
 ```
 
+---
+
+# Plantillas C++20
+
+## Plantilla C1 — Inicializadores designados
+
+```cpp
+struct Config { string nombre; int n = 10; bool activo = true; };
+Config c{.nombre = "prueba", .activo = false};   // orden de declaracion
+```
+
+## Plantilla C2 — Enlaces estructurados
+
+```cpp
+for (const auto &[a, b, c] : vector_de_structs) { /* ... */ }
+auto [promedio, maximo] = calcular(v);
+for (const auto &[clave, valor] : mapa) { /* ... */ }
+```
+
+## Plantilla C3 — Comparación y ordenamiento
+
+```cpp
+struct P {
+    string a; int b;
+    auto operator<=>(const P &) const = default;
+};
+ranges::sort(v);                           // orden natural
+ranges::sort(v, {}, &P::b);                // por un campo
+ranges::sort(v, ranges::greater{}, &P::b); // descendente
+```
+
+## Plantilla C4 — `optional` y `variant`
+
+```cpp
+optional<Item> buscar(int id);
+if (auto it = buscar(7)) { it->campo; }
+valor = buscar(7).value_or(Item{});
+
+variant<int, double, string> v = 3.5;
+visit([](const auto &x){ cout << x; }, v);
+```
+
+## Plantilla C5 — `constexpr`
+
+```cpp
+struct V { double x, y; constexpr V operator+(V o) const { return {x+o.x, y+o.y}; } };
+static_assert((V{1,2} + V{3,4}).x == 4);
+constexpr array<V, 3> tabla = {{{0,0},{1,1},{2,2}}};
+consteval int cuadrado(int x) { return x * x; }
+```
+
+---

@@ -187,3 +187,71 @@ Dados dos arreglos **ordenados** ascendentemente.
 - Recorrer `m` con un `int (*fila)[4]` y mostrar la suma de cada fila.
 - Crear un `int *ap[3]` que apunte a las filas y acceder con `ap[2][3]`.
 - Explicar la diferencia entre `int *ap[3]` y `int (*fila)[4]` con ayuda de `sizeof`.
+
+---
+
+# Nivel C++20 — Programación moderna
+
+Los problemas 1 al 15 se resuelven con C++11 o anterior. Los problemas 16 al 20 usan características de C++20 (y de C++14/17 que se consolidan en él). Compile con:
+
+```bash
+g++ -std=c++20 -Wall -Wextra solucionNN.cpp -o solucionNN
+```
+
+> `<format>` requiere GCC 13 o superior (o MSVC 19.29+). Verifique su compilador con `g++ --version`.
+
+---
+
+# Problema 16 — `std::span`: punteros con tamaño (C++20)
+
+## Requerimientos
+
+- Implementar `int suma(span<const int> v)` e `void invertir(span<int> v)` sin recibir `n` por separado.
+- Llamarlas con un arreglo completo, con `span(a).first(3)`, `span(a).last(3)` y `span(a).subspan(2, 4)`.
+- Comprobar que modificar un `span` modifica el arreglo original.
+- Mostrar `size()`, `size_bytes()`, `front()` y `data()` de un subspan.
+
+---
+
+# Problema 17 — Algoritmos con rangos sobre arreglos (C++20)
+
+## Requerimientos
+
+- Con `std::ranges`: ordenar un arreglo ascendente y descendente (`ranges::greater{}`), obtener mínimo y máximo con `ranges::minmax`, buscar con `ranges::find`, invertir y rotar.
+- Usar `views::filter` para mostrar solo los pares sin crear otro arreglo.
+- Ordenar un arreglo de `struct Producto` por precio con una **proyección** (`&Producto::precio`).
+- Calcular la posición de un iterador con `it - v.begin()`.
+
+---
+
+# Problema 18 — Plantillas con `concepts` en lugar de `void *` (C++20)
+
+## Requerimientos
+
+- Implementar `template <typename T> void intercambiar(T *a, T *b)`.
+- Definir `concept Numerico = integral<T> || floating_point<T>` y funciones `suma` y `promedio` restringidas a ese concepto que reciban `span<const T>`.
+- Definir `esPar` restringida a `integral` y `mayor` restringida a `totally_ordered`; esta última devuelve un puntero al mayor.
+- Dejar comentadas las llamadas que **no** compilan y explicar el mensaje de error.
+- Comparar con el problema 10 (`void *`): ¿qué ventajas aporta el sistema de tipos?
+
+---
+
+# Problema 19 — Punteros inteligentes avanzados (C++20)
+
+## Requerimientos
+
+- Crear un arreglo con `make_unique_for_overwrite<int[]>(n)`, llenarlo y observarlo mediante un `span`.
+- Crear un `unique_ptr<FILE, decltype(cerrar)>` con un eliminador personalizado (lambda) que cierre el archivo y muestre un mensaje.
+- Implementar una lista enlazada simple cuyos nodos sean `unique_ptr<Nodo>`: `insertarInicio`, `mostrar` e `invertir` (solo con `move`).
+- Verificar que no hay `new`, `delete` ni fugas de memoria.
+
+---
+
+# Problema 20 — Punteros en tiempo de compilación: `constexpr` y `consteval` (C++20)
+
+## Requerimientos
+
+- Implementar `constexpr int sumaPtr(const int *ini, const int *fin)` y evaluarla en compilación sobre un `constexpr array<int, 8>`; verificar con `static_assert`.
+- Implementar una función `consteval` que genere una tabla de cuadrados.
+- Implementar una búsqueda `constexpr` con punteros y usarla tanto en compilación (`static_assert`) como en ejecución.
+- Explicar la diferencia entre `const`, `constexpr` y `consteval`.

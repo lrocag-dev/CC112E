@@ -249,3 +249,91 @@ termino   = numero  { (*|/) numero }
 5. Al terminar, si `*p != '\0'`, hay un carácter inesperado.
 
 Esto garantiza que `2 + 3 * 4` se evalúe como `2 + (3 * 4)`.
+
+---
+
+# Nivel C++20 — Programación moderna
+
+Programas completos en [`codigo/`](codigo/) (`solucion16.cpp` … `solucion20.cpp`). Compilar con `g++ -std=c++20 -Wall -Wextra`.
+
+---
+
+# Problema 16 — `string_view`
+
+## Idea de solución
+
+`string_view` es un par (puntero, longitud) que **observa** caracteres ajenos. Recortar o dividir solo cambia el puntero y la longitud; no copia ni reserva memoria.
+
+## Algoritmo
+
+**dividir**:
+1. `pos = s.find(sep)`.
+2. Guardar `s.substr(0, pos)`.
+3. Si `pos == npos`, terminar; si no, `s.remove_prefix(pos + 1)` y repetir.
+
+**recortar**: mientras `s.front() == ' '`, `remove_prefix(1)`; mientras `s.back() == ' '`, `remove_suffix(1)`.
+
+Cuidado: si la cadena original se destruye, las vistas quedan colgantes.
+
+---
+
+# Problema 17 — `format` y `from_chars`
+
+## Idea de solución
+
+`format` usa cadenas de formato con especificaciones `{:[relleno][alineación][ancho][.precisión][tipo]}`. `from_chars` convierte sin excepciones, sin asignar memoria y sin depender del *locale*.
+
+## Algoritmo
+
+1. Alineación: `<` izquierda, `>` derecha, `^` centro; `*>8` rellena con `*`.
+2. Tipos: `x` hexadecimal, `b` binario, `f` real, `#` agrega prefijo (`0x`, `0b`).
+3. `aReal`: `auto [fin, ec] = from_chars(ini, fin_texto, v)`; es válido solo si `ec == errc{}` y `fin == fin_texto` (se consumió todo).
+4. `to_chars(buf, buf + N, valor)` devuelve un puntero al final; ahí se escribe `'\0'`.
+
+---
+
+# Problema 18 — Vistas de rangos sobre texto
+
+## Idea de solución
+
+Una vista es una descripción perezosa de una secuencia: no se calcula nada hasta que se recorre. Se encadenan con `|`.
+
+## Algoritmo
+
+1. `normalizar(s) = s | filter(isalpha) | transform(tolower)`.
+2. `esPalindromo`: comparar la vista con su inversa: `ranges::equal(n, n | views::reverse)`.
+3. `frase | views::split(' ')` produce subrangos; se materializan con `string p(parte.begin(), parte.end())`.
+4. `views::take(7)` limita a los primeros 7 elementos.
+5. Ninguna de las etapas crea una cadena intermedia.
+
+---
+
+# Problema 19 — `concepts` para cadenas
+
+## Idea de solución
+
+Un concepto expresa *qué debe poder hacer* un tipo. Aquí, "se puede ver como `string_view`" cubre `char[]`, `const char *`, `string` y `string_view` con una sola plantilla.
+
+## Algoritmo
+
+1. `concept TextoLike = convertible_to<T, string_view>`.
+2. En la función, `string_view s = texto;` y recorrer `s`.
+3. `contarVocales`: pasar a minúscula con `c | 0x20` y comparar con `a e i o u`.
+4. `concept Contenedor = requires(T t){ t.size(); t.begin(); t.end(); }`.
+5. `contarVocales(42)` no compila porque `int` no es convertible a `string_view`; `longitud(char[])` falla porque un arreglo no tiene `size()`.
+
+---
+
+# Problema 20 — `<=>` y proyecciones
+
+## Idea de solución
+
+Con `= default`, el compilador genera `<=>` comparando los miembros en orden de declaración (y también `==`). Una **proyección** indica qué parte del elemento comparar sin escribir un comparador completo.
+
+## Algoritmo
+
+1. `ranges::sort(v)` usa el `<=>` generado: apellido, nombre y edad.
+2. `ranges::sort(v, {}, [](auto &p){ return minusculas(p.apellido); })` ordena por la clave transformada.
+3. `ranges::sort(v, ranges::greater{}, &Persona::edad)` ordena por edad descendente.
+4. `compararSinCaso(a, b)` retorna `minusculas(a) <=> minusculas(b)` (tipo `strong_ordering`).
+5. Con `std::string`, `<` compara por código ASCII: las mayúsculas van antes que las minúsculas.

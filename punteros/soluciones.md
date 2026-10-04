@@ -240,3 +240,90 @@ Los operadores postfijos (`[]`, `()`, `++` postfijo) tienen mayor precedencia qu
 2. `m[i][j]` es `*(*(m+i)+j)`: `m+i` apunta a la fila `i`, `*(m+i)` es esa fila decaída a `int *`.
 3. `fila++` avanza una fila completa (4 enteros).
 4. `sizeof(ap)` = 3 punteros; `sizeof(fila)` = un puntero.
+
+---
+
+# Nivel C++20 — Programación moderna
+
+Programas completos en [`codigo/`](codigo/) (`solucion16.cpp` … `solucion20.cpp`). Compilar con `g++ -std=c++20 -Wall -Wextra`.
+
+---
+
+# Problema 16 — `std::span`
+
+## Idea de solución
+
+Un `span<T>` es un par (puntero, tamaño) que no es dueño de los datos. Elimina el parámetro `n` y permite crear sub-vistas sin copiar.
+
+## Algoritmo
+
+1. `span<const int>` para solo lectura, `span<int>` para modificar.
+2. Un arreglo se convierte automáticamente en `span`.
+3. `first(k)`, `last(k)` y `subspan(pos, cnt)` devuelven nuevas vistas del mismo almacenamiento.
+4. `invertir` intercambia `v[i]` con `v[size-1-i]` hasta la mitad.
+5. `size_bytes() = size() * sizeof(int)`.
+
+---
+
+# Problema 17 — Algoritmos con rangos
+
+## Idea de solución
+
+Los algoritmos de `std::ranges` reciben el contenedor completo (sin `begin`/`end`) y aceptan **proyecciones**: una función que se aplica a cada elemento antes de comparar.
+
+## Algoritmo
+
+1. `ranges::sort(v)`, `ranges::sort(v, ranges::greater{})`.
+2. `auto [mn, mx] = ranges::minmax(v)`.
+3. `ranges::find` devuelve un iterador; la posición es `it - v.begin()`.
+4. `ranges::rotate(v, v.begin() + k)` rota a la izquierda `k` posiciones.
+5. `v | views::filter(pred)` es una vista perezosa: no copia nada.
+6. `ranges::sort(p, {}, &Producto::precio)` ordena por el campo indicado.
+
+---
+
+# Problema 18 — `concepts`
+
+## Idea de solución
+
+Un *concept* es un predicado sobre tipos evaluado en compilación. Con él, la plantilla rechaza tipos inadecuados con un error legible y se evita perder el tipo como ocurre con `void *`.
+
+## Algoritmo
+
+1. `intercambiar<T>` funciona para cualquier `T` copiable.
+2. `concept Numerico = integral<T> || floating_point<T>`.
+3. `template <Numerico T> T suma(span<const T>)`.
+4. `esPar(2.5)` falla: `double` no satisface `integral`.
+5. `mayor` recorre con punteros y retorna `nullptr` si el span está vacío.
+
+---
+
+# Problema 19 — Punteros inteligentes avanzados
+
+## Idea de solución
+
+RAII: el destructor del puntero inteligente libera el recurso. Se puede personalizar *cómo* se libera mediante un eliminador.
+
+## Algoritmo
+
+1. `make_unique_for_overwrite<int[]>(n)` reserva sin inicializar.
+2. `unique_ptr<FILE, decltype(cerrar)> f(fopen(...), cerrar)`: `cerrar` se invoca al salir del ámbito.
+3. `Nodo` guarda `unique_ptr<Nodo> sig`; `insertarInicio` hace `nuevo->sig = move(cabeza); cabeza = move(nuevo);`.
+4. `invertir` recorre moviendo cada nodo al frente de una lista `prev`.
+5. Al destruirse `Lista` se libera toda la cadena (para listas muy largas la destrucción recursiva podría agotar la pila).
+
+---
+
+# Problema 20 — `constexpr` y `consteval`
+
+## Idea de solución
+
+`constexpr` permite ejecutar una función en compilación **o** en ejecución; `consteval` obliga a hacerlo en compilación. Pueden usar punteros y aritmética de punteros mientras no escapen del cálculo.
+
+## Algoritmo
+
+1. `sumaPtr` recorre `[ini, fin)` y retorna la suma; `static_assert(TOTAL == 31)`.
+2. `tablaCuadrados()` es `consteval` y llena un `array`.
+3. `buscar(span<const int>, clave)` retorna un puntero o `nullptr`.
+4. La misma función se evalúa en compilación (`constexpr bool hay9`) y en ejecución con la entrada del usuario.
+5. Resumen: `const` = no modificable; `constexpr` = conocido en compilación si es posible; `consteval` = obligatoriamente en compilación.

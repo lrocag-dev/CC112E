@@ -364,6 +364,80 @@ struct Alumno {
 
 ---
 
+---
+
+# Nivel C++20 — Programación moderna
+
+Los problemas 1 al 15 se resuelven con C++11 o anterior. Los problemas 16 al 20 usan características de C++20 (y de C++14/17 que se consolidan en él). Compile con:
+
+```bash
+g++ -std=c++20 -Wall -Wextra solucionNN.cpp -o solucionNN
+```
+
+> `<format>` requiere GCC 13 o superior (o MSVC 19.29+). Verifique su compilador con `g++ --version`.
+
+---
+
+# Problema 16 — `std::filesystem`: carpetas y archivos (C++17/20)
+
+## Requerimientos
+
+- Crear una carpeta temporal con `create_directories` y dentro algunos archivos de prueba.
+- Listar su contenido ordenado por nombre indicando si es directorio, el tamaño y la extensión.
+- Copiar un archivo (`copy_file`), renombrarlo (`rename`) y comprobar `exists`.
+- Mostrar `stem()`, `extension()` y `parent_path()` de una ruta.
+- Recorrer recursivamente con `recursive_directory_iterator` sumando tamaños y contando archivos regulares.
+- Eliminar todo con `remove_all`.
+
+---
+
+# Problema 17 — Reportes de texto con `format` (C++20)
+
+## Requerimientos
+
+- Dado un `vector<Venta>` (producto, cantidad, precio), escribir en un archivo de texto un reporte con título centrado, columnas alineadas, línea de separación y total.
+- Usar `format` con anchos y precisión (`{:<20}{:>8}{:>12.2f}`).
+- Cerrar el archivo mediante RAII (ámbito del `ofstream`).
+- Volver a leer el archivo y mostrarlo con numeración de líneas (`{:02d}`).
+
+---
+
+# Problema 18 — Importar CSV con `string_view` y `from_chars` (C++20)
+
+## Requerimientos
+
+- Crear un CSV con registros `nombre,edad,nota`, incluyendo líneas inválidas.
+- Leer **todo** el archivo en un `string` con `istreambuf_iterator`.
+- Recorrer las líneas con `string_view` sin crear copias y analizar cada una con `optional<Registro> analizar(string_view)`; los números se convierten con `from_chars`.
+- Informar el número y el contenido de las líneas inválidas.
+- Ordenar los registros válidos por nota descendente (`ranges::sort` con proyección) y mostrarlos con enlaces estructurados.
+
+---
+
+# Problema 19 — Archivos binarios con `span` y *concepts* (C++20)
+
+## Requerimientos
+
+- Definir `struct Sensor { int32_t id; double lectura; char nombre[16]; }` y verificar con `static_assert(is_trivially_copyable_v<Sensor>)`.
+- Implementar `template <typename T> requires is_trivially_copyable_v<T> void escribir(ofstream &, span<const T>)` que escriba un arreglo completo con `size_bytes()`.
+- Implementar `leer<T>(ruta)` que devuelva un `vector<T>` calculando la cantidad de registros desde el tamaño del archivo.
+- Modificar solo el segundo registro con acceso aleatorio (`seekg`/`seekp`).
+- Mostrar los bytes de un `double` con `as_bytes(span(&d, 1))`.
+
+---
+
+# Problema 20 — Manejo de errores con RAII y `source_location` (C++20)
+
+## Requerimientos
+
+- Implementar la clase `ArchivoTexto` que abra el archivo en el constructor, lance `runtime_error` si falla (indicando la línea desde la que se pidió) y muestre un mensaje en el destructor.
+- Prohibir su copia con `= delete`.
+- Implementar `registrarError(const string &, source_location = source_location::current())` que imprima archivo, línea y función.
+- Probar con un archivo existente y con otro inexistente; capturar también `filesystem::filesystem_error`.
+- Comprobar que el archivo se cierra en ambos casos (también cuando hay excepción).
+
+---
+
 # Requisitos Generales
 
 Todos los programas deben:

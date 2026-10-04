@@ -436,6 +436,81 @@ Diseñe un sistema astronómico.
 
 ---
 
+---
+
+# Nivel C++20 — Programación moderna
+
+Los problemas 1 al 15 se resuelven con C++11 o anterior. Los problemas 16 al 20 usan características de C++20 (y de C++14/17 que se consolidan en él). Compile con:
+
+```bash
+g++ -std=c++20 -Wall -Wextra solucionNN.cpp -o solucionNN
+```
+
+> `<format>` requiere GCC 13 o superior (o MSVC 19.29+). Verifique su compilador con `g++ --version`.
+
+---
+
+# Problema 16 — Inicializadores designados (C++20)
+
+## Requerimientos
+
+- Definir `struct Satelite { string nombre; double altitudKm = 400.0; double masaKg = 0.0; bool activo = true; }`.
+- Crear satélites usando `Satelite{.nombre = "X", .masaKg = 1.0}`, omitiendo los campos que tengan valor por defecto.
+- Construir un `vector<Satelite>` combinando variables ya creadas con inicializadores designados directos.
+- Mostrar una tabla con `format`, la cantidad de satélites activos y la masa total.
+- Explicar por qué los campos deben nombrarse en el mismo orden en que se declararon.
+
+---
+
+# Problema 17 — Enlaces estructurados y comparación `<=>` (C++17/20)
+
+## Requerimientos
+
+- Definir `struct Estudiante { string nombre; int codigo; double nota; }` con `operator<=>` por defecto.
+- Recorrer un `vector<Estudiante>` con `for (const auto &[nombre, codigo, nota] : v)`.
+- Devolver un `struct Resumen` desde una función y desempaquetarlo con `auto [prom, mx, mn] = ...`.
+- Ordenar con `ranges::sort(v)` y luego por nota descendente con la proyección `&Estudiante::nota`.
+- Agrupar las notas por nombre en un `map<string, vector<double>>` y recorrerlo con enlaces estructurados.
+
+---
+
+# Problema 18 — `optional` y `if` con inicializador (C++17/20)
+
+## Requerimientos
+
+- Definir `struct Libro { int id; string titulo; int stock; }` y un catálogo global.
+- Implementar `optional<Libro> buscar(int id)`: devuelve `nullopt` si no existe.
+- Implementar `optional<int> prestar(int id)`: si hay stock lo descuenta y devuelve el stock restante; si no, `nullopt`. Usar `if (auto *l = buscarRef(id); l && l->stock > 0)`.
+- Mostrar el uso de `value_or`.
+- Comparar con el uso de punteros nulos y de valores centinela como `-1`.
+
+---
+
+# Problema 19 — `variant` y `visit`: estructuras con tipos alternativos (C++17/20)
+
+## Requerimientos
+
+- Definir `struct Medicion { string sensor; variant<int, double, string> valor; }`.
+- Mostrar cada medición con `visit` y un objeto-función con tres sobrecargas de `operator()`.
+- Sumar solo los valores numéricos con `visit` y una lambda genérica con `if constexpr`.
+- Obtener el tipo almacenado con `index()` y acceder con `get_if<double>`.
+- Capturar `bad_variant_access` al usar `get<int>` con el tipo incorrecto.
+
+---
+
+# Problema 20 — Estructuras `constexpr` y `consteval` (C++20)
+
+## Requerimientos
+
+- Definir `struct Punto` con operadores `+`, `-`, `*` y `norma2()` marcados `constexpr`, y `operator==` por defecto.
+- Verificar sus propiedades con `static_assert`.
+- Definir `struct Constante { string_view nombre; double valor; string_view unidad; }` y un `constexpr array<Constante, 4>` con constantes físicas.
+- Calcular el área de un triángulo `constexpr` con la fórmula del determinante.
+- Generar con una función `consteval` la trayectoria de 5 puntos de un móvil.
+- Buscar una constante por nombre con `ranges::find(constantes, nombre, &Constante::nombre)` y la mayor con `ranges::max_element`.
+
+---
+
 # Recomendaciones Generales
 
 - Utilizar `std::string`.

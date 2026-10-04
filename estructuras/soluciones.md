@@ -506,6 +506,93 @@ Estrella masBrillante(const Observacion& o) {
 
 ---
 
+---
+
+# Nivel C++20 — Programación moderna
+
+Programas completos en [`codigo/`](codigo/) (`solucion16.cpp` … `solucion20.cpp`). Compilar con `g++ -std=c++20 -Wall -Wextra`.
+
+---
+
+# Problema 16 — Inicializadores designados
+
+## Idea de solución
+
+C++20 permite `T{.campo = valor, ...}` para tipos agregados (sin constructores). Los campos omitidos toman su valor por defecto o `0`.
+
+## Algoritmo
+
+1. Declarar valores por defecto en la estructura (`double altitudKm = 400.0`).
+2. Inicializar con `.nombre = ...` y los campos necesarios, **en el orden declarado**.
+3. Guardar en el `vector` (puede ir un inicializador designado directamente dentro de `{...}`).
+4. Contar `activo == true` y sumar `masaKg` en un solo recorrido.
+5. Usar `format("{:<10} {:>7.1f}", ...)` para la tabla.
+
+---
+
+# Problema 17 — Enlaces estructurados y `<=>`
+
+## Idea de solución
+
+Los enlaces estructurados (`auto [a, b, c] = obj`) desempaquetan estructuras, pares y tuplas. `= default` en `<=>` genera todas las comparaciones por orden de declaración.
+
+## Algoritmo
+
+1. `for (const auto &[n, c, nt] : v)` recorre sin copiar.
+2. La función `resumir` retorna `Resumen{prom, mx, mn}`; el llamador usa `auto [p, mx, mn] = resumir(v);`.
+3. `ranges::sort(v)` ordena por nombre, luego código y luego nota.
+4. `ranges::sort(v, ranges::greater{}, &Estudiante::nota)`.
+5. `notas[e.nombre].push_back(e.nota)` agrupa; al recorrer el `map`, cada elemento es `[clave, valor]`.
+
+---
+
+# Problema 18 — `optional`
+
+## Idea de solución
+
+`optional<T>` representa "un `T` o nada" en el sistema de tipos, evitando valores centinela (`-1`) y punteros nulos para ausencia.
+
+## Algoritmo
+
+1. `buscar`: recorrer; `return l;` si coincide, `return nullopt;` al final.
+2. Uso: `if (auto l = buscar(id)) { l->titulo ... }` (el `optional` se evalúa como booleano).
+3. `prestar`: `if (auto *l = buscarRef(id); l && l->stock > 0)` limita el alcance de `l` al `if`.
+4. `value_or(valor)` entrega un valor alternativo si está vacío.
+
+---
+
+# Problema 19 — `variant` y `visit`
+
+## Idea de solución
+
+`variant<A, B, C>` es una unión segura: guarda exactamente uno de los tipos y sabe cuál. `visit` aplica un visitante al valor activo.
+
+## Algoritmo
+
+1. Objeto-función con `operator()(int)`, `(double)` y `(const string &)`: `visit(Mostrar{}, m.valor)`.
+2. Lambda genérica: `if constexpr (is_arithmetic_v<T>) suma += v;` ignora el caso `string` en compilación.
+3. `m.valor.index()` es 0, 1 o 2 según el tipo.
+4. `get_if<double>(&m.valor)` devuelve puntero o `nullptr`.
+5. `get<int>` con el tipo equivocado lanza `bad_variant_access`.
+
+---
+
+# Problema 20 — Estructuras `constexpr`
+
+## Idea de solución
+
+Una estructura simple con funciones miembro `constexpr` puede usarse en cálculos de compilación. `static_assert` convierte propiedades matemáticas en pruebas que se ejecutan al compilar.
+
+## Algoritmo
+
+1. Operadores `constexpr` que retornan `Punto{...}`.
+2. `static_assert((Punto{1,2} + Punto{3,4}) == Punto{4,6})`.
+3. Area: `|(x1-x0)(y2-y0) - (x2-x0)(y1-y0)| / 2` (para (0,0), (4,0), (0,3) da 6).
+4. `consteval trayectoria(inicio, vel)`: `t[i] = inicio + vel * i`.
+5. `ranges::find(constantes, buscado, &Constante::nombre)` busca por campo; `max_element(..., &Constante::valor)` halla la mayor.
+
+---
+
 # Recomendaciones Finales
 
 ## Buenas prácticas

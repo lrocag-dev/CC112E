@@ -159,6 +159,77 @@ int e = stoi("77");                      // lanza excepcion si es invalido
 
 ---
 
+# Plantillas C++20
+
+## Plantilla C1 — `string_view`
+
+```cpp
+#include <string_view>
+
+string_view sv = "texto de ejemplo";    // sin copia
+sv.remove_prefix(2);
+sv.remove_suffix(1);
+size_t pos = sv.find(' ');
+string_view palabra = sv.substr(0, pos);
+sv.starts_with("te");  sv.ends_with("lo");
+```
+
+Use `string_view` como parámetro de solo lectura; **no** lo devuelva si apunta a una variable local.
+
+## Plantilla C2 — `format`
+
+```cpp
+#include <format>
+
+string s = format("{:<10}|{:>6.2f}|{:^7}|", nombre, precio, "UNI");
+format("{0:#x} {0:#b} {0:06d}", 255);
+cout << format("Total: {}\n", total);
+```
+
+## Plantilla C3 — Conversión segura con `from_chars`
+
+```cpp
+#include <charconv>
+
+optional<int> aEntero(string_view s)
+{
+    int v;
+    auto [fin, ec] = from_chars(s.data(), s.data() + s.size(), v);
+    if (ec != errc{} || fin != s.data() + s.size()) return nullopt;
+    return v;
+}
+```
+
+## Plantilla C4 — Vistas de rangos
+
+```cpp
+#include <ranges>
+
+auto limpio = s | views::filter([](unsigned char c){ return isalpha(c); })
+                | views::transform([](unsigned char c){ return char(tolower(c)); });
+for (char c : limpio) cout << c;
+bool pal = ranges::equal(limpio, limpio | views::reverse);
+```
+
+## Plantilla C5 — `concepts` y `<=>`
+
+```cpp
+template <typename T>
+concept TextoLike = convertible_to<T, string_view>;
+
+template <TextoLike T>
+void procesar(const T &t) { string_view s = t; /* ... */ }
+
+struct Persona {
+    string apellido, nombre;
+    auto operator<=>(const Persona &) const = default;
+};
+ranges::sort(v);
+ranges::sort(v, {}, &Persona::apellido);
+```
+
+---
+
 # Errores frecuentes
 
 | Error | Consecuencia |
