@@ -2,9 +2,19 @@
 
 Colección de problemas en C++, ordenada por semana del sílabo (ciclo 2026-2).
 
-Cada sesión tiene 20 problemas: del 1 al 15 se resuelven con C++11 (nivel básico/intermedio y avanzado) y del 16 al 20 usan características modernas de C++20. Compilar con `g++ -std=c++20 -Wall -Wextra` (GCC 13 o superior).
+Cada sesión tiene 20 problemas: del 1 al 10 son de nivel básico/intermedio, del 11 al 15 de nivel avanzado (todos se resuelven con C++11) y del 16 al 20 usan características modernas de C++20. Compilar con `g++ -std=c++20 -Wall -Wextra` (GCC 13 o superior).
 
 ## Índice
+
+### Semana 1 — Recursividad e iteración
+- [Problemas](recursividad/problemas.md)
+- [Soluciones](recursividad/soluciones.md)
+- [Código](recursividad/codigo_ejemplo.md)
+
+### Semanas 2 y 3 — Ordenamiento y búsqueda
+- [Problemas](ordenamiento/problemas.md)
+- [Soluciones](ordenamiento/soluciones.md)
+- [Código](ordenamiento/codigo_ejemplo.md)
 
 ### Semana 5 — Punteros I y II
 - [Problemas](punteros/problemas.md)
@@ -15,6 +25,11 @@ Cada sesión tiene 20 problemas: del 1 al 15 se resuelven con C++11 (nivel bási
 - [Problemas](cadenas/problemas.md)
 - [Soluciones](cadenas/soluciones.md)
 - [Código](cadenas/codigo_ejemplo.md)
+
+### Semanas 9 y 11 — Memoria dinámica
+- [Problemas](memoria_dinamica/problemas.md)
+- [Soluciones](memoria_dinamica/soluciones.md)
+- [Código](memoria_dinamica/codigo_ejemplo.md)
 
 ### Semana 10 — Estructuras
 - [Problemas](estructuras/problemas.md)
