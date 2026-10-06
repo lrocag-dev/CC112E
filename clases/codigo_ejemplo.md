@@ -632,3 +632,75 @@ int main()
 - Evitar fugas de memoria.
 - Mantener encapsulamiento.
 - Aplicar el principio de responsabilidad única.
+
+---
+
+# Plantillas C++20
+
+## Plantilla C1 — Concept de interfaz
+
+```cpp
+template <typename T>
+concept Figura = requires(const T &f) {
+    { f.area() } -> convertible_to<double>;
+    { f.nombre() } -> convertible_to<string>;
+};
+
+template <Figura F>
+void describir(const F &f) { cout << f.nombre() << " " << f.area(); }
+```
+
+## Plantilla C2 — Comparaciones automáticas
+
+```cpp
+class Version {
+    int a, b, c;
+public:
+    auto operator<=>(const Version &) const = default;   // genera ==, !=, <, <=, >, >=
+};
+```
+
+## Plantilla C3 — Clase con prácticas modernas
+
+```cpp
+class Clase {
+    string nombre;
+    int valor = 0;                                   // inicializador de miembro
+    inline static int total = 0;
+public:
+    Clase(string n, int v) : nombre(move(n)), valor(v) { ++total; }
+    explicit Clase(string n) : Clase(move(n), 0) {}  // delegado
+    [[nodiscard]] int get() const noexcept { return valor; }
+    Clase(const Clase &) = delete;
+};
+```
+
+## Plantilla C4 — Regla de los cinco
+
+```cpp
+class R {
+    int *p; size_t n;
+public:
+    explicit R(size_t n);
+    ~R();
+    R(const R &);
+    R &operator=(const R &);
+    R(R &&o) noexcept : p(exchange(o.p, nullptr)), n(exchange(o.n, 0)) {}
+    R &operator=(R &&) noexcept;
+};
+// Regla del cero: usar vector / unique_ptr y no declarar ninguno
+```
+
+## Plantilla C5 — Colección polimórfica con rangos
+
+```cpp
+vector<unique_ptr<Base>> v;
+v.push_back(make_unique<Derivada>(args));
+
+ranges::sort(v, ranges::greater{}, [](const auto &p){ return p->valor(); });
+for (const auto &p : v | views::filter([](const auto &p){ return p->valor() > 10; }))
+    p->mostrar();
+auto n = ranges::count_if(v, [](const auto &p){ return p->activo(); });
+```
+
+---

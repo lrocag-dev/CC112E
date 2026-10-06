@@ -245,6 +245,113 @@ Combinar herencia múltiple, polimorfismo y clases abstractas.
 
 ---
 
+---
+
+# Nivel C++20 — Programación moderna
+
+Programas completos en [`codigo/`](codigo/) (`solucion16.cpp` … `solucion20.cpp`). Compilar con `g++ -std=c++20 -Wall -Wextra`.
+
+---
+
+# Problema 16 — Polimorfismo estático
+
+## Idea de solución
+
+Un `concept` define una interfaz **implícita** verificada en compilación. No hay tabla virtual ni indirección, pero todos los elementos de una colección deben ser del mismo tipo (o usar `variant`).
+
+## Algoritmo
+
+1. `concept Figura = requires(const T &f){ { f.area() } -> convertible_to<double>; ... }`.
+2. `Circulo` y `Rectangulo` implementan los tres métodos; no heredan de nada.
+3. `describir<Figura F>` y `masGrande<Figura F>(F, F)` solo aceptan tipos que cumplan el concepto.
+4. `static_assert(Figura<Circulo>)`, `static_assert(!Figura<Triangulo>)`.
+5. `visit([](const auto &x){ return x.area(); }, f)` sobre `variant` suma áreas de tipos distintos.
+
+| Dinámico (`virtual`) | Estático (`concept`) |
+|---|---|
+| Decide en ejecución | Decide en compilación |
+| Colección heterogénea simple | Colección homogénea o `variant` |
+| Costo de indirección | Sin costo adicional |
+| Requiere herencia | No requiere herencia |
+
+---
+
+# Problema 17 — `<=>`
+
+## Idea de solución
+
+`a <=> b` devuelve un resultado de ordenamiento (`strong_ordering`, `weak_ordering` o `partial_ordering`). A partir de `<=>` el compilador sintetiza `<`, `<=`, `>`, `>=`; `==` y `!=` provienen de `operator==`. Con `= default` en `<=>`, también se genera `==`.
+
+## Algoritmo
+
+1. `Version`: el `<=>` por defecto compara `mayor`, `menor`, `parche` en ese orden.
+2. `Fraccion`: normalizar en el constructor (signo en el numerador, dividir por el MCD).
+3. `operator<=>`: `num * o.den <=> o.num * den` (válido porque los denominadores son positivos).
+4. Como `<=>` es personalizado, definir `operator==` aparte.
+5. `ranges::sort` usa `<`; `r < 0`, `r > 0`, `r == 0` interpretan el resultado.
+
+---
+
+# Problema 18 — Prácticas modernas
+
+## Idea de solución
+
+Cada palabra clave moderna traslada un error de ejecución a un error de compilación.
+
+| Elemento | Qué evita |
+|---|---|
+| `explicit` | conversiones implícitas inesperadas |
+| `[[nodiscard]]` | ignorar un resultado importante (p. ej. si el retiro falló) |
+| `override` | método que no sobrescribe nada por error de firma |
+| `final` | redefinir o heredar donde no se debe |
+| `= delete` | copias indeseadas |
+| constructor delegado | duplicar código de inicialización |
+| `inline static` | definir miembros estáticos fuera de la clase |
+
+## Algoritmo
+
+1. Implementar el constructor completo y hacer que los demás deleguen: `Cuenta(string t) : Cuenta(move(t), 0.0)`.
+2. Incrementar el contador estático en el constructor principal.
+3. `retirar` devuelve `bool`; el llamador debe usarlo.
+4. `Base::usar` es `virtual final`: llama a `tipo()`, que sí puede sobrescribirse.
+5. Comentar las líneas inválidas y razonar cada error.
+
+---
+
+# Problema 19 — Regla de los cinco
+
+## Idea de solución
+
+Si la clase administra un recurso crudo, hay que definir destructor, copia, asignación por copia, movimiento y asignación por movimiento. Si no, delegue en `vector`/`unique_ptr` y no defina ninguno (regla del cero).
+
+## Algoritmo
+
+1. Copia: reservar nuevo arreglo y copiar elementos (copia profunda).
+2. Asignación por copia: copiar primero a un arreglo nuevo, luego liberar el anterior (seguro ante autoasignación).
+3. Movimiento: `n(exchange(o.n, 0)), datos(exchange(o.datos, nullptr))`: roba el recurso y deja el origen vacío pero destruible.
+4. Marcar el movimiento `noexcept`: `vector` solo mueve al reubicar si es `noexcept`; si no, copia.
+5. El objeto movido-desde queda válido pero sin recursos (`tamano() == 0`).
+6. `BufferSimple` con `vector<int>` obtiene copia y movimiento correctos sin escribir nada.
+
+---
+
+# Problema 20 — Colección polimórfica moderna
+
+## Idea de solución
+
+`unique_ptr<Base>` da propiedad exclusiva y destrucción correcta (la base tiene destructor virtual). Los rangos permiten consultas declarativas sobre la colección.
+
+## Algoritmo
+
+1. `plantilla.push_back(make_unique<Operario>("Luis", 1500, 10))`.
+2. Lambda genérica `auto mostrar = [](auto &&rango){ ... }` acepta vector y vistas filtradas.
+3. `ranges::sort(plantilla, ranges::greater{}, [](const auto &e){ return e->sueldo(); })`: la proyección invoca el método virtual.
+4. `views::filter` crea una vista perezosa sin copiar los `unique_ptr`.
+5. `views::transform` + `accumulate` calcula el total sin vector intermedio.
+6. `ranges::find_if` y `ranges::count_if` consultan por `cargo()`.
+
+---
+
 # Conclusión
 
 Este conjunto evalúa:

@@ -312,6 +312,99 @@ Las actualizaciones se realizan directamente sobre el archivo.
 
 ---
 
+---
+
+# Nivel C++20 — Programación moderna
+
+Programas completos en [`codigo/`](codigo/) (`solucion16.cpp` … `solucion20.cpp`). Compilar con `g++ -std=c++20 -Wall -Wextra`.
+
+---
+
+# Problema 16 — `std::filesystem`
+
+## Idea de solución
+
+`filesystem::path` representa rutas de forma portable (`/` compone rutas), y las funciones del espacio de nombres reemplazan comandos del sistema operativo.
+
+## Algoritmo
+
+1. `temp_directory_path() / "lab"` y `create_directories`.
+2. Crear archivos con `ofstream(ruta) << texto`.
+3. Cargar `directory_iterator` en un `vector<directory_entry>` y ordenarlo con `ranges::sort(v, {}, proyeccion)`.
+4. `is_directory()`, `file_size()`, `path().extension()`.
+5. `copy_file(..., overwrite_existing)`, `rename`, `exists`.
+6. `recursive_directory_iterator` + `is_regular_file()`.
+7. `remove_all` retorna cuántos elementos eliminó.
+
+---
+
+# Problema 17 — Reportes con `format`
+
+## Idea de solución
+
+`format` produce un `string` ya alineado; se envía al archivo con `<<`. El ámbito del `ofstream` garantiza el cierre y el volcado.
+
+## Algoritmo
+
+1. Abrir `ofstream out(ruta)` en un bloque `{ ... }`; verificar `if (!out)`.
+2. Título: `format("{:^52}\n", "REPORTE")`.
+3. Por cada venta: `format("{:<20}{:>8}{:>12.2f}{:>12.2f}\n", ...)` y acumular el total.
+4. Al terminar el bloque se cierra el archivo.
+5. Reabrir con `ifstream`, `getline` y numerar con `{:02d}`.
+
+---
+
+# Problema 18 — Importar CSV
+
+## Idea de solución
+
+Leer todo a memoria y analizar con vistas evita copias. `from_chars` informa errores sin excepciones.
+
+## Algoritmo
+
+1. `string contenido(istreambuf_iterator<char>(in), {})`.
+2. Mantener `string_view resto = contenido`; en cada iteración `fin = resto.find('\n')`, `linea = resto.substr(0, fin)`, `resto.remove_prefix(...)`.
+3. `analizar`: dividir por `,`; exigir 3 campos; convertir edad y nota con `from_chars`; devolver `nullopt` si algo falla.
+4. Contar errores y mostrar el número de línea.
+5. `ranges::sort(validos, ranges::greater{}, &Registro::nota)`.
+
+---
+
+# Problema 19 — Binario con `span`
+
+## Idea de solución
+
+Un tipo trivialmente copiable se puede volcar byte a byte. `span<const T>` aporta `data()` y `size_bytes()` para escribir el arreglo completo con una sola llamada.
+
+## Algoritmo
+
+1. `static_assert(is_trivially_copyable_v<Sensor>)` evita volcar tipos con punteros internos (como `string`).
+2. `out.write(reinterpret_cast<const char *>(datos.data()), datos.size_bytes())`.
+3. Leer: `seekg(0, end)`, `tellg()` = bytes; `v(bytes / sizeof(T))`; `in.read(...)`.
+4. Acceso aleatorio: el registro `i` empieza en `i * sizeof(Sensor)`; leer, modificar, `seekp` y escribir.
+5. `as_bytes(span(&d, 1))` expone los 8 bytes del `double` (en little-endian `1.0` es `00 00 00 00 00 00 f0 3f`).
+
+> Los archivos binarios de este tipo dependen de la arquitectura y del relleno (*padding*): no son portables entre sistemas.
+
+---
+
+# Problema 20 — RAII y `source_location`
+
+## Idea de solución
+
+Si el recurso se adquiere en el constructor y se libera en el destructor, el archivo se cierra aunque se lance una excepción. `source_location::current()` como argumento por defecto captura el lugar de la **llamada**.
+
+## Algoritmo
+
+1. `ArchivoTexto(path, source_location loc = current())`: `in.open(ruta)`; si falla, `throw runtime_error(format(..., loc.line()))`.
+2. Copia eliminada: `ArchivoTexto(const ArchivoTexto &) = delete;`.
+3. Destructor: mostrar `[cerrando ...]`.
+4. `contarLineas` crea el objeto; si el constructor lanza, el destructor **no** se ejecuta (el objeto no llegó a existir); si la lectura termina, se ejecuta al salir.
+5. `registrarError` imprime `loc.file_name()`, `loc.line()` y `loc.function_name()`.
+6. `fs::file_size` de una ruta inexistente lanza `filesystem_error`.
+
+---
+
 # Competencias Evaluadas
 
 * Gestión dinámica de memoria.

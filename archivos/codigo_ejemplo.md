@@ -509,3 +509,70 @@ ESTUDIANTE CON MAYOR PROMEDIO
 
 1002      Luis Rojas                    18.40
 ```
+
+---
+
+# Plantillas C++20
+
+## Plantilla C1 — `filesystem`
+
+```cpp
+#include <filesystem>
+namespace fs = std::filesystem;
+
+fs::path ruta = fs::path("datos") / "notas.txt";
+fs::create_directories("datos/respaldo");
+if (fs::exists(ruta)) cout << fs::file_size(ruta);
+for (const auto &e : fs::directory_iterator("datos"))
+    cout << e.path().filename() << (e.is_directory() ? " <DIR>" : "") << endl;
+fs::copy_file(ruta, "datos/respaldo/notas.txt", fs::copy_options::overwrite_existing);
+fs::remove(ruta);
+```
+
+## Plantilla C2 — Reporte con `format`
+
+```cpp
+{
+    ofstream out("reporte.txt");
+    out << format("{:<20}{:>8}{:>12.2f}\n", nombre, cantidad, precio);
+}   // se cierra al salir del bloque
+```
+
+## Plantilla C3 — Leer todo el archivo
+
+```cpp
+ifstream in("archivo.txt", ios::binary);
+string contenido(istreambuf_iterator<char>(in), {});
+
+string_view resto = contenido;
+while (!resto.empty()) {
+    size_t fin = resto.find('\n');
+    string_view linea = resto.substr(0, fin);
+    resto.remove_prefix(fin == string_view::npos ? resto.size() : fin + 1);
+}
+```
+
+## Plantilla C4 — Binario genérico con `span`
+
+```cpp
+template <typename T>
+requires is_trivially_copyable_v<T>
+void escribir(ofstream &out, span<const T> v)
+{
+    out.write(reinterpret_cast<const char *>(v.data()), v.size_bytes());
+}
+```
+
+## Plantilla C5 — Errores con `source_location`
+
+```cpp
+void log(const string &msg, source_location l = source_location::current())
+{
+    cerr << l.file_name() << ":" << l.line() << " " << l.function_name() << ": " << msg << endl;
+}
+
+try { /* ... */ }
+catch (const fs::filesystem_error &e) { cerr << e.what(); }
+```
+
+---

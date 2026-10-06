@@ -359,6 +359,79 @@ Investigador
 
 ---
 
+---
+
+# Nivel C++20 — Programación moderna
+
+Los problemas 1 al 15 se resuelven con C++11 o anterior. Los problemas 16 al 20 usan características de C++20 (y de C++14/17 que se consolidan en él). Compile con:
+
+```bash
+g++ -std=c++20 -Wall -Wextra solucionNN.cpp -o solucionNN
+```
+
+> `<format>` requiere GCC 13 o superior (o MSVC 19.29+). Verifique su compilador con `g++ --version`.
+
+---
+
+# Problema 16 — Polimorfismo estático con `concepts` (C++20)
+
+## Requerimientos
+
+- Definir `concept Figura` con una expresión `requires` que exija `area()`, `perimetro()` y `nombre()`.
+- Implementar `Circulo` y `Rectangulo` **sin clase base ni `virtual`**.
+- Escribir `template <Figura F> void describir(const F &)` y `masGrande`.
+- Comprobar con `static_assert` que `Circulo` cumple el concepto y que `Triangulo` (sin `perimetro`) e `int` no lo cumplen.
+- Guardar figuras de tipos distintos en un `vector<variant<Circulo, Rectangulo>>` y sumar sus áreas con `visit`.
+- Comparar ventajas y desventajas con el polimorfismo dinámico (`virtual`).
+
+---
+
+# Problema 17 — Comparaciones automáticas con `<=>` (C++20)
+
+## Requerimientos
+
+- Clase `Version(mayor, menor, parche)` con `auto operator<=>(const Version &) const = default`; comprobar `<`, `==`, `>=`, `!=` y ordenar un vector con `ranges::sort`.
+- Clase `Fraccion` que se mantenga simplificada y defina `strong_ordering operator<=>` propio (comparar `a*d` con `c*b`) y `operator==`.
+- Ordenar un vector de fracciones (incluyendo negativas) y mostrar `x <=> z` como menor, mayor o equivalente.
+- Explicar qué operadores genera el compilador a partir de `<=>` y `==`.
+
+---
+
+# Problema 18 — Prácticas modernas de diseño de clases
+
+## Requerimientos
+
+- Clase `Cuenta` con: inicializador de miembro, constructores delegados, constructor `explicit`, contador `inline static`, métodos `[[nodiscard]]` y `noexcept`, y `depositar` que devuelva `*this` para encadenar.
+- Clases `Base`/`Derivada` donde `Base::usar()` sea `virtual ... final`, `Derivada` sea `final` y su método use `override`.
+- Clase `NoCopiable` con copia eliminada (`= delete`).
+- Dejar comentadas las líneas que **no** compilan y explicar cada error.
+
+---
+
+# Problema 19 — Regla de los cinco y semántica de movimiento
+
+## Requerimientos
+
+- Implementar `Buffer` con un arreglo dinámico propio: constructor, destructor, constructor de copia, asignación por copia, constructor de movimiento (`noexcept`) y asignación por movimiento. Cada uno debe imprimir un mensaje.
+- Usar `std::exchange` en las operaciones de movimiento.
+- Probar: construcción, copia, `move`, asignación por movimiento, retorno desde una función y `vector<Buffer>::push_back` con reubicación.
+- Mostrar el estado de un objeto *movido-desde*.
+- Implementar `BufferSimple` con `vector<int>` y demostrar la **regla del cero**.
+
+---
+
+# Problema 20 — Colección polimórfica moderna (C++20)
+
+## Requerimientos
+
+- Jerarquía `Empleado` (abstracta) → `Operario`, `Gerente`, `Practicante` con sueldo calculado de forma distinta; usar `using Empleado::Empleado;` para heredar constructores en la clase que no agrega atributos.
+- Guardar los empleados en `vector<unique_ptr<Empleado>>` creados con `make_unique`.
+- Mostrar la plantilla con `format`, ordenarla por sueldo descendente con `ranges::sort` y proyección, y mostrar solo los de sueldo mayor a 2000 con `views::filter`.
+- Calcular el total y promedio de sueldos con `views::transform` y `accumulate`.
+- Buscar con `ranges::find_if` y contar con `ranges::count_if`.
+
+---
+
 # Requisitos Generales
 
 Todos los programas deben:
